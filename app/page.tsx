@@ -259,7 +259,7 @@ export default function Home() {
       // 创建系统提示信息
       const systemPrompt: DebateMessageType = {
         role: 'system',
-        content: `辩论主题是: "${debate.topic}"。你是正方，请提供支持这个观点的开场论述。`,
+        content: `辩论主题是: "${debate.topic}"。你是正方辩手，请提供支持这个观点的开场论述。`,
         side: 'pro1'
       };
       
@@ -325,8 +325,8 @@ export default function Home() {
           content: `辩论主题是: "${debate.topic}"。
           你是${sideLabel}，请基于之前的发言进行回应。
           ${isPro 
-            ? '你应该支持这个观点，提供有说服力的论据和例子。' 
-            : '你应该反对这个观点，提供有说服力的论据和例子。'}`,
+            ? '你必须支持这个观点，提供有说服力的论据和例子。' 
+            : '你必须反对这个观点，提供有说服力的论据和例子。'}`,
           side: currentSide
         },
         ...debate.messages
