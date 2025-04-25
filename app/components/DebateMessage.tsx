@@ -46,8 +46,8 @@ export default function DebateMessage({ message, mode }: DebateMessageProps) {
     <div 
       className={`mb-4 p-4 rounded-lg ${
         isPro 
-          ? 'bg-blue-50 border-blue-200 border mr-auto' 
-          : 'bg-red-50 border-red-200 border ml-auto'
+          ? 'bg-gray-900 border-blue-500 border mr-auto' 
+          : 'bg-gray-900 border-red-500 border ml-auto'
       } max-w-[80%]`}
     >
       <div className="flex items-center mb-2">
@@ -59,10 +59,10 @@ export default function DebateMessage({ message, mode }: DebateMessageProps) {
           {isPro ? `正${displayNumber}` : `反${displayNumber}`}
         </div>
         <div>
-          <p className="font-semibold">{displaySide}</p>
+          <p className="font-semibold text-white">{displaySide}</p>
         </div>
       </div>
-      <div className="whitespace-pre-line text-black">
+      <div className="whitespace-pre-line text-white">
         {message.content}
       </div>
     </div>
