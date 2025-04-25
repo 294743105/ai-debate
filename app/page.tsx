@@ -57,6 +57,7 @@ export default function Home() {
   // 加载状态
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [saveStatusMessage, setSaveStatusMessage] = useState<string | null>(null);
 
   // 加载已保存的模型
   useEffect(() => {
@@ -132,11 +133,26 @@ export default function Home() {
 
   // 手动保存当前配置
   const saveConfig = () => {
-    localStorage.setItem('pro1Model', JSON.stringify(pro1Model));
-    localStorage.setItem('con1Model', JSON.stringify(con1Model));
-    localStorage.setItem('pro2Model', JSON.stringify(pro2Model));
-    localStorage.setItem('con2Model', JSON.stringify(con2Model));
-    localStorage.setItem('debateMode', debate.mode);
+    try {
+      localStorage.setItem('pro1Model', JSON.stringify(pro1Model));
+      localStorage.setItem('con1Model', JSON.stringify(con1Model));
+      localStorage.setItem('pro2Model', JSON.stringify(pro2Model));
+      localStorage.setItem('con2Model', JSON.stringify(con2Model));
+      localStorage.setItem('debateMode', debate.mode);
+      
+      // 显示成功消息
+      setSaveStatusMessage('配置已成功保存！');
+      // 3秒后清除消息
+      setTimeout(() => {
+        setSaveStatusMessage(null);
+      }, 3000);
+    } catch (err) {
+      setError(`保存配置失败: ${err instanceof Error ? err.message : String(err)}`);
+      // 3秒后清除错误消息
+      setTimeout(() => {
+        setError(null);
+      }, 3000);
+    }
   };
 
   // 保存模型到存储中
@@ -480,10 +496,20 @@ export default function Home() {
             <button
               onClick={saveConfig}
               disabled={isLoading}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 flex items-center"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
               保存配置
             </button>
+            
+            {/* 显示保存状态消息 */}
+            {saveStatusMessage && (
+              <div className="px-4 py-2 bg-green-100 text-green-800 rounded animate-pulse">
+                {saveStatusMessage}
+              </div>
+            )}
             
             <button
               onClick={startDebate}
