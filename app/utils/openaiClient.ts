@@ -4,8 +4,9 @@ import { ModelConfig, DebateMessage } from '../types';
 export async function getDebateResponse(
   modelConfig: ModelConfig,
   messages: DebateMessage[],
-  side: 'pro' | 'con',
-  topic: string
+  side: 'pro1' | 'con1' | 'pro2' | 'con2',
+  topic: string,
+  sideLabel?: string
 ): Promise<string> {
   try {
     // 使用OpenAI SDK的方式（但可能有CORS问题）
@@ -16,13 +17,16 @@ export async function getDebateResponse(
         dangerouslyAllowBrowser: true, // 允许在浏览器环境中使用
       });
 
+      const isPro = side.startsWith('pro');
+      const displaySide = sideLabel || (isPro ? '正方' : '反方');
+
       // 将消息格式转换为OpenAI API格式
       const formattedMessages = [
         {
           role: 'system' as const,
-          content: `你是一场辩论中的${side === 'pro' ? '正方' : '反方'}。
+          content: `你是一场辩论中的${displaySide}。
           辩论主题是: "${topic}"。
-          ${side === 'pro' 
+          ${isPro 
             ? '你应该支持这个观点，提供有说服力的论据和例子。' 
             : '你应该反对这个观点，提供有说服力的论据和例子。'}
           保持你的回应简洁、有逻辑性，并直接针对前一个发言进行反驳。
@@ -47,13 +51,16 @@ export async function getDebateResponse(
     } 
     // 使用我们的API代理（解决CORS问题）
     else {
+      const isPro = side.startsWith('pro');
+      const displaySide = sideLabel || (isPro ? '正方' : '反方');
+      
       // 将消息格式转换为API格式
       const formattedMessages = [
         {
           role: 'system',
-          content: `你是一场辩论中的${side === 'pro' ? '正方' : '反方'}。
+          content: `你是一场辩论中的${displaySide}。
           辩论主题是: "${topic}"。
-          ${side === 'pro' 
+          ${isPro 
             ? '你应该支持这个观点，提供有说服力的论据和例子。' 
             : '你应该反对这个观点，提供有说服力的论据和例子。'}
           保持你的回应简洁、有逻辑性，并直接针对前一个发言进行反驳。

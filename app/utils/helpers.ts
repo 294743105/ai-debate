@@ -10,30 +10,52 @@ export function generateId(): string {
   });
 }
 
+import { DebateState } from '../types';
+
 /**
  * 导出辩论记录为txt文件
  */
-export function exportDebateToTxt(
-  topic: string, 
-  messages: Array<{ role: string; content: string; side: 'pro' | 'con' }>, 
-  proModelName: string, 
-  conModelName: string
-): void {
+export function exportDebateToTxt(debate: DebateState, fileName?: string): void {
   // 跳过非assistant消息
-  const debateMessages = messages.filter(msg => msg.role === 'assistant');
+  const debateMessages = debate.messages.filter(msg => msg.role === 'assistant');
   
   // 创建文本内容
-  let content = `辩论主题: ${topic}\n`;
-  content += `正方: ${proModelName}\n`;
-  content += `反方: ${conModelName}\n`;
+  let content = `辩论主题: ${debate.topic}\n`;
+  
+  if (debate.mode === 'solo') {
+    content += `正方: 模型1\n`;
+    content += `反方: 模型2\n`;
+  } else {
+    content += `正方1: 模型1\n`;
+    content += `反方1: 模型2\n`;
+    content += `正方2: 模型3\n`;
+    content += `反方2: 模型4\n`;
+  }
+  
   content += `\n=================== 辩论开始 ===================\n\n`;
   
   // 遍历消息生成内容
   debateMessages.forEach((message, index) => {
-    const side = message.side === 'pro' ? '正方' : '反方';
-    const modelName = message.side === 'pro' ? proModelName : conModelName;
+    let side: string;
     
-    content += `[回合 ${Math.floor(index/2) + 1}] ${side} (${modelName}):\n`;
+    switch(message.side) {
+      case 'pro1': 
+        side = debate.mode === 'team' ? '正方1' : '正方';
+        break;
+      case 'con1': 
+        side = debate.mode === 'team' ? '反方1' : '反方';
+        break;
+      case 'pro2': 
+        side = '正方2';
+        break;
+      case 'con2': 
+        side = '反方2';
+        break;
+      default:
+        side = '未知';
+    }
+    
+    content += `[回合 ${Math.floor(index/2) + 1}] ${side}:\n`;
     content += `${message.content}\n\n`;
   });
   
@@ -41,14 +63,14 @@ export function exportDebateToTxt(
   
   // 创建文件名
   const date = new Date();
-  const filename = `辩论记录_${topic.substring(0, 20)}_${date.getFullYear()}${padZero(date.getMonth()+1)}${padZero(date.getDate())}.txt`;
+  const defaultFileName = `辩论记录_${debate.topic.substring(0, 20)}_${date.getFullYear()}${padZero(date.getMonth()+1)}${padZero(date.getDate())}.txt`;
   
   // 创建下载链接
   const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = filename;
+  link.download = fileName || defaultFileName;
   
   // 触发下载
   document.body.appendChild(link);
