@@ -4,7 +4,7 @@
 
 ## 一键部署
 
-[![部署到Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2F294743105%2Fai-debate-app)
+[![部署到Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2F294743105%2Fai-debate)
 
 1. 点击上方按钮
 2. 如果需要，使用GitHub账户登录Vercel
